@@ -32,7 +32,7 @@ Product.init(
             allowNull: false,
         },
         fecha: {
-            type: DataTypes.DATEONLY,
+            type: DataTypes.DATE,
             allowNull: false,
         },
         estatus: {
@@ -42,9 +42,11 @@ Product.init(
     },
     {
         sequelize,
-        modelName: "ProductNoReg",
+        modelName: "Product",
     }
 );
+
+module.exports = Product;
 /* async function testConnection() {
 
     try {

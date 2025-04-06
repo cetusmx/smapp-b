@@ -1,17 +1,33 @@
 const router = require("express").Router()
 
-const Products = require("../model/product.model")
+const Products = require("../model/product.model.js")
 
-router.get("/products", (req, res) => {
-    res.send("I am a router")
+router.get("/products", async (req, res) => {
+    const products = await Products.findAll()
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: products
+    })
 })
-router.get("/products", (req, res) => {
-    res.send("I am a router")
+
+router.get("/products/:id", async (req, res) => {
+    const id = req.params.id
+    const product = await Products.findOne({
+        where:{
+            id: id
+        }
+    })
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: product,
+    })
 })
+
 router.post("/products", async (req, res) => {
-    console.log(req.body)
-
-    /* await Products.sync();
+    //console.log(req.body)
+    await Products.sync();
     const createProduct = await Products.create({
         clave: req.body.clave,
         sucursal: req.body.sucursal,
@@ -20,7 +36,7 @@ router.post("/products", async (req, res) => {
         claveProveedor: req.body.claveProveedor,
         fecha: req.body.fecha,
         estatus: req.body.estatus,
-    }) */
+    })
     res.status(201).json({
         ok: true,
         status: 201,
