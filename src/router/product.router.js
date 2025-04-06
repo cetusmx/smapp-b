@@ -26,7 +26,7 @@ router.get("/products/:clave", async (req, res) => {
 })
 
 router.post("/products", async (req, res) => {
-    //console.log(req.body)
+    console.log(req.body)
     await Products.sync();
     const createProduct = await Products.create({
         clave: req.body.clave,
