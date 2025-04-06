@@ -7,8 +7,12 @@ const routerLista = require("../router/lista.router")
 
 const app = express()
 app.use(express.json({
-    type: ['application/json', 'text/plain']
+    type: ['application/json', 'text/plain'],
+    limit: '50mb',
+    extended: true
   }))
+
+  app.use(express.urlencoded({limit : '50mb',extended : true}))
 
 app.use(cors());
 app.use(morgan("dev"))

@@ -26,27 +26,24 @@ routerLista.get("/listas/:sucursal", async (req, res) => {
 })
 
 routerLista.post("/listas", async (req, res) => {
-    console.log(req.body)
+    //console.log(req.body)
     await Listas.sync();
-    const createLista = await Listas.create({
-        clave: req.body.clave,
-        precio: req.body.precio,
-        sucursal: req.body.sucursal,
-        fecha: req.body.fecha,
-    })
-    res.status(201).json({
+    const createLista = await Listas.bulkCreate(req.body)
+    res.status(200).json({
         ok: true,
-        status: 201,
+        status: 200,
         message: "Listas guardadas",
     })
 })
 
 routerLista.put("/listas/:sucursal", async (req, res) => {
+    /* console.log(req.body) */
     const sucursal = req.params.sucursal
+    /* console.log(sucursal) */
     const updateLista = await Listas.update({
         clave: req.body.clave,
         precio: req.body.precio,
-        sucursal: req.body.sucursal,
+        sucursal: sucursal,
         fecha: req.body.fecha,
     },
         {
@@ -54,16 +51,16 @@ routerLista.put("/listas/:sucursal", async (req, res) => {
                 sucursal: sucursal
             }
         })
-        res.status(200).json({
-            ok: true,
-            status: 200,
-            body: updateLista,
-        })
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: updateLista,
+    })
 })
 routerLista.delete("/listas/:sucursal", async (req, res) => {
     const sucursal = req.params.sucursal
     const deleteLista = await Listas.destroy({
-        where:{
+        where: {
             sucursal: sucursal
         }
     })
