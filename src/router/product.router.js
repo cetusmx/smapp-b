@@ -14,7 +14,7 @@ router.get("/products", async (req, res) => {
 router.get("/products/:clave", async (req, res) => {
     const clave = req.params.clave
     const product = await Products.findOne({
-        where:{
+        where: {
             clave: clave
         }
     })
@@ -44,11 +44,40 @@ router.post("/products", async (req, res) => {
     })
 })
 
-router.put("/products", (req, res) => {
-    res.send("I am a router")
+router.put("/products/:clave", async (req, res) => {
+    const clave = req.params.clave
+    const updateProduct = await Products.update({
+        clave: req.body.clave,
+        sucursal: req.body.sucursal,
+        rfc: req.body.rfc,
+        factura: req.body.factura,
+        claveProveedor: req.body.claveProveedor,
+        fecha: req.body.fecha,
+        estatus: req.body.estatus,
+    },
+        {
+            where: {
+                clave: clave
+            }
+        })
+        res.status(200).json({
+            ok: true,
+            status: 200,
+            body: updateProduct,
+        })
 })
-router.delete("/products", (req, res) => {
-    res.send("I am a router")
+router.delete("/products/:clave", async (req, res) => {
+    const clave = req.params.clave
+    const deleteProduct = await Products.destroy({
+        where:{
+            clave: clave
+        }
+    })
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: deleteProduct,
+    })
 })
 
 module.exports = router
