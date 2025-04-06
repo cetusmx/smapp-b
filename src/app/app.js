@@ -3,6 +3,7 @@ const morgan = require("morgan")
 const cors = require("cors");
 
 const router = require("../router/product.router")
+const routerLista = require("../router/lista.router")
 
 const app = express()
 app.use(express.json({
@@ -17,5 +18,7 @@ app.get('/', (req, res) => {
 });
 
 app.use("/api/v1", router)
+
+app.use("/api/v1", routerLista)
 
 module.exports = app;
