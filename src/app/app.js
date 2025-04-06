@@ -1,10 +1,11 @@
 const express = require("express")
 const morgan = require("morgan")
+const cors = require("cors");
 
 const router = require("../router/product.router")
 
 const app = express()
-
+app.use(cors());
 app.use(morgan("dev"))
 
 app.get('/', (req, res) => {
