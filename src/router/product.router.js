@@ -11,11 +11,11 @@ router.get("/products", async (req, res) => {
     })
 })
 
-router.get("/products/:id", async (req, res) => {
-    const id = req.params.id
+router.get("/products/:clave", async (req, res) => {
+    const clave = req.params.clave
     const product = await Products.findOne({
         where:{
-            id: id
+            clave: clave
         }
     })
     res.status(200).json({
