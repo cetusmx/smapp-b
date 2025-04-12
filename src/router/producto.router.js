@@ -26,57 +26,26 @@ routerProducto.get("/productos/:clave", async (req, res) => {
 })
 
 routerProducto.post("/productos", async (req, res) => {
-    console.log(req.body)
-    await Products.sync();
-    const createProduct = await Productos.create({
-        clave: req.body.clave,
-        sucursal: req.body.sucursal,
-        rfc: req.body.rfc,
-        factura: req.body.factura,
-        claveProveedor: req.body.claveProveedor,
-        fecha: req.body.fecha,
-        estatus: req.body.estatus,
-    })
-    res.status(201).json({
-        ok: true,
-        status: 201,
-        message: "Product inserted",
-    })
-})
 
-routerProducto.put("/productos/:clave", async (req, res) => {
-    const clave = req.params.clave
-    const updateProduct = await Productos.update({
-        clave: req.body.clave,
-        sucursal: req.body.sucursal,
-        rfc: req.body.rfc,
-        factura: req.body.factura,
-        claveProveedor: req.body.claveProveedor,
-        fecha: req.body.fecha,
-        estatus: req.body.estatus,
-    },
-        {
-            where: {
-                clave: clave
-            }
-        })
+    await Productos.sync();
+    const createProductos = await Productos.bulkCreate(req.body)
     res.status(200).json({
         ok: true,
         status: 200,
-        body: updateProduct,
+        message: "Productos guardados",
     })
 })
-routerProducto.delete("/productos/:clave", async (req, res) => {
-    const clave = req.params.clave
-    const deleteProduct = await Productos.destroy({
+
+routerProducto.delete("/productos", async (req, res) => {
+    const deleteProducto = await Productos.destroy({
         where: {
-            clave: clave
+            truncate: true
         }
     })
     res.status(200).json({
         ok: true,
         status: 200,
-        body: deleteProduct,
+        body: deleteProducto,
     })
 })
 
