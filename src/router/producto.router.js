@@ -36,7 +36,7 @@ routerProducto.post("/productos", async (req, res) => {
     })
 })
 
-routerProducto.delete("/productos/:dummy", async (req, res) => {
+routerProducto.delete("/productos/", async (req, res) => {
     const deleteProducto = await Productos.destroy({
         where: {
             truncate: true
