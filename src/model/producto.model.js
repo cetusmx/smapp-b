@@ -40,7 +40,7 @@ Producto.init(
             allowNull: true,
         },
         fechaultimacompra: {
-            type: DataTypes.DATEONLY,
+            type: DataTypes.DATE,
             allowNull: true,
             defaultValue: null,
         },
