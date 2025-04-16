@@ -40,9 +40,8 @@ Producto.init(
             allowNull: true,
         },
         fechaultimacompra: {
-            type: DataTypes.DATE,
+            type: DataTypes.STRING,
             allowNull: true,
-            defaultValue: null,
         },
         diametrointerior: {
             type: DataTypes.STRING,
