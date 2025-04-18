@@ -99,6 +99,10 @@ Producto.init(
             type: DataTypes.STRING,
             allowNull: true,
         },
+        linkimagen: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
     },
     {
         sequelize,
