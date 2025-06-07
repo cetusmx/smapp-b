@@ -16,7 +16,7 @@ routerLineaContada.post("/lineacontada", async (req, res) => {
     await LineasContadas.sync();
     const createProduct = await LineasContadas.create({
         InventarioID: req.body.inventID,
-        Linea: req.body.LineId,
+        Linea: req.body.lineId,
         NombreLinea: req.body.description,
         isCounted: req.body.isCounted,
         CreatedAt: req.body.date,
