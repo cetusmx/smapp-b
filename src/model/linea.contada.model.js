@@ -11,10 +11,6 @@ class LineaContada extends Model { }
 
 LineaContada.init(
     {
-        Id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
         InventarioID: {
             type: DataTypes.STRING,
             allowNull: true,
