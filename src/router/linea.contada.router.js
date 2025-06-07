@@ -11,7 +11,7 @@ routerLineaContada.get("/lineacontada", async (req, res) => {
     })
 })
 
-router.post("/lineacontada", async (req, res) => {
+routerLineaContada.post("/lineacontada", async (req, res) => {
     console.log(req.body)
     await LineasContadas.sync();
     const createProduct = await LineasContadas.create({
