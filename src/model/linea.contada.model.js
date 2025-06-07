@@ -27,10 +27,6 @@ LineaContada.init(
             type: DataTypes.BOOLEAN,
             allowNull: true,
         },
-        CreatedAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
     },
     {
         sequelize,
