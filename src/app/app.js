@@ -7,6 +7,7 @@ const routerLista = require("../router/lista.router")
 const routerProducto = require("../router/producto.router")
 const routerInventario = require("../router/inventario.router")
 const routerLineasContadas = require("../router/linea.contada.router")
+const routerProductosContados = require("../router/producto.contado.router")
 
 const app = express()
 app.use(express.json({
@@ -33,5 +34,7 @@ app.use("/api/v1", routerProducto)
 app.use("/api/v1", routerInventario)
 
 app.use("/api/v1", routerLineasContadas)
+
+app.use("/api/v1", routerProductosContados)
 
 module.exports = app;
