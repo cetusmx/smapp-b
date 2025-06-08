@@ -23,11 +23,19 @@ ProductoContado.init(
             type: DataTypes.STRING,
             allowNull: true,
         },
+        Unidad: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         Descripcion: {
             type: DataTypes.STRING,
             allowNull: true,
         },
         Existencia: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        Observaciones: {
             type: DataTypes.STRING,
             allowNull: true,
         },
