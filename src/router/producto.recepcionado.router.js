@@ -12,7 +12,7 @@ routerProductoRecepcionado.get("/productosrecepcionados", async (req, res) => {
 })
 
 routerProductoRecepcionado.post("/productorecepcionado", async (req, res) => {
-    console.log(req.body)
+    console.log("Dentro API productorecepcionado",req.body)
     await ProductosRecepcionados.sync();
     const createProductoRecepcionado = await ProductosRecepcionados.create({
         Cantidad: req.body.cantidad,
@@ -20,6 +20,7 @@ routerProductoRecepcionado.post("/productorecepcionado", async (req, res) => {
         ClaveProveedor: req.body.producto,
         Proveedor: req.body.proveedor,
         Factura: req.body.factura,
+        Sucursal: req.body.sucursal,
     })
     res.status(201).json({
         ok: true,

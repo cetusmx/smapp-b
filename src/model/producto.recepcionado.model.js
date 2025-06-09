@@ -31,6 +31,10 @@ ProductoRecepcionado.init(
             type: DataTypes.STRING,
             allowNull: true,
         },
+        Sucursal: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
     },
     {
         sequelize,
