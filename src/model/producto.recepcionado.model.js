@@ -9,7 +9,7 @@ const sequelize = new Sequelize('sealmark_cotizador', 'sealmark_cotizauser', 'Tr
 
 class ProductoRecepcionado extends Model { }
 
-ProductoContado.init(
+ProductoRecepcionado.init(
     {
         Cantidad: {
             type: DataTypes.STRING,
