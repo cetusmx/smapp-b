@@ -1,6 +1,6 @@
 const routerProductoRecepcionado = require("express").Router()
 
-const ProductosRecepcionados = require("../model/producto.contado.model.js")
+const ProductosRecepcionados = require("../model/producto.recepcionado.model.js")
 
 routerProductoRecepcionado.get("/productosrecepcionados", async (req, res) => {
     const productosRecepcionados = await ProductosRecepcionados.findAll()
@@ -24,12 +24,12 @@ routerProductoRecepcionado.post("/productorecepcionado", async (req, res) => {
     res.status(201).json({
         ok: true,
         status: 201,
-        message: "Producto insertado",
+        message: "Producto recepcionado insertado",
     })
 })
 
 routerProductoRecepcionado.post("/productosrecepcionados", async (req, res) => {
-    //console.log(req.body)
+    console.log(req.body)
     await ProductosRecepcionados.sync();
     const createProductosRecpcinados = await ProductosRecepcionados.bulkCreate(req.body)
     res.status(200).json({
