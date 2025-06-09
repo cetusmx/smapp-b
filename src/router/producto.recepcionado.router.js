@@ -28,14 +28,14 @@ routerProductoRecepcionado.post("/productorecepcionado", async (req, res) => {
     })
 })
 
-routerProductoRecepcionado.post("/productoscontados", async (req, res) => {
+routerProductoRecepcionado.post("/productosrecepcionados", async (req, res) => {
     //console.log(req.body)
     await ProductosRecepcionados.sync();
     const createProductosRecpcinados = await ProductosRecepcionados.bulkCreate(req.body)
     res.status(200).json({
         ok: true,
         status: 200,
-        message: "Productos contados y guardados",
+        message: "Productos recepcionados y guardados",
     })
 })
 
