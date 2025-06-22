@@ -35,6 +35,10 @@ Inventario.init(
             type: DataTypes.STRING,
             allowNull: true,
         },
+        Unidad: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         Linea: {
             type: DataTypes.STRING,
             allowNull: true,
@@ -44,6 +48,14 @@ Inventario.init(
             allowNull: true,
         },
         PendientesSurtir: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        Fecha: {
+            type: DataTypes.DATE,
+            allowNull: false,
+        },
+        LineaDesc: {
             type: DataTypes.STRING,
             allowNull: false,
         },
