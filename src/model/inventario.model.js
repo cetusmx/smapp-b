@@ -11,10 +11,10 @@ class Inventario extends Model { }
 
 Inventario.init(
     {
-        Id: {
+        /* Id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-        },
+        }, */
         InventarioID: {
             type: DataTypes.STRING,
             allowNull: true,
