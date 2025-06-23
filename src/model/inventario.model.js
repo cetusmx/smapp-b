@@ -59,6 +59,10 @@ Inventario.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        Auditor: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
     },
     {
         sequelize,
