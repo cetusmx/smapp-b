@@ -11,7 +11,7 @@ routerInventarioGeneral.get("/inventariogeneral", async (req, res) => {
     })
 })
 
-routerInventarioGeneral.post("inventariogeneral", async (req, res) => {
+routerInventarioGeneral.post("/inventariogeneral", async (req, res) => {
     console.log(req.body)
     await InventarioGeneral.sync();
     const inventarioGral = await InventarioGeneral.create({
