@@ -33,11 +33,11 @@ InventarioGeneral.init(
         },
         Auditor: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         Fecha: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
         },
     },
     {
