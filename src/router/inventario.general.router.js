@@ -15,13 +15,13 @@ routerInventarioGeneral.post("/inventariogeneral", async (req, res) => {
     console.log(req.body)
     await InventarioGeneral.sync();
     const inventarioGral = await InventarioGeneral.create({
-        InventarioID: req.body.inventID,
-        Almacen: req.body.almacen,
-        Ciudad: req.body.ciudad,
-        Ubicacion: req.body.ubicacion,
-        Lineas: req.body.lineas,
-        Auditor: req.body.auditor,
-        Fecha: req.body.fecha,
+        InventarioID: req.body.InventarioID,
+        Almacen: req.body.Almacen,
+        Ciudad: req.body.Ciudad,
+        Ubicacion: req.body.Ubicacion,
+        Lineas: req.body.Lineas,
+        Auditor: req.body.Auditor,
+        Fecha: req.body.Fecha,
         /* CreatedAt: req.body.date, */
     })
     res.status(201).json({
