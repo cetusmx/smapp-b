@@ -31,4 +31,15 @@ routerInventarioGeneral.post("inventariogeneral", async (req, res) => {
     })
 })
 
+routerInventarioGeneral.post("/inventariosgenerales", async (req, res) => {
+    //console.log(req.body)
+    await InventarioGeneral.sync();
+    const createProductosContados = await InventarioGeneral.bulkCreate(req.body)
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        message: "Inventarios generales guardados",
+    })
+})
+
 module.exports = routerInventarioGeneral
