@@ -47,7 +47,7 @@ routerInventario.post("/inventario", async (req, res) => {
     res.status(200).json({
         ok: true,
         status: 200,
-        message: "Inventario almacenado",
+        message: "Inventario cíclico almacenado",
     })
 })
 
