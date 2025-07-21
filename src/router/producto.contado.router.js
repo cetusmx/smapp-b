@@ -16,7 +16,7 @@ routerProductoContado.post("/productocontado", async (req, res) => {
     await ProductosContados.sync();
     const createProductoContado = await ProductosContados.create({
         InventarioID: req.body.inventID,
-        Linea: req.body.line,
+        Linea: req.body.lineId,
         Clave: req.body.clave,
         Descripcion: req.body.description,
         Existencia: req.body.quantity,
