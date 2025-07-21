@@ -11,6 +11,7 @@ routerProductoContado.get("/productoscontados", async (req, res) => {
     })
 })
 
+
 routerProductoContado.post("/productocontado", async (req, res) => {
     console.log(req.body)
     await ProductosContados.sync();
