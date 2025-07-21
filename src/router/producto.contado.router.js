@@ -34,7 +34,7 @@ routerProductoContado.post("/productocontado", async (req, res) => {
 })
 
 routerProductoContado.post("/productoscontados", async (req, res) => {
-    //console.log(req.body)
+    console.log("Producto contados: ",req.body)
     await ProductosContados.sync();
     const createProductosContados = await ProductosContados.bulkCreate(req.body)
     res.status(200).json({
