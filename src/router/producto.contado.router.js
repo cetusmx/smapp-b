@@ -22,6 +22,7 @@ routerProductoContado.post("/productocontado", async (req, res) => {
         Existencia: req.body.quantity,
         Observaciones: req.body.note,
         Unidad: req.body.unit,
+        Auditor: req.body.auditor,
         /* CreatedAt: req.body.date, */
     })
     res.status(201).json({

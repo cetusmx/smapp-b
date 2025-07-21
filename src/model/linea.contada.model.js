@@ -27,6 +27,10 @@ LineaContada.init(
             type: DataTypes.BOOLEAN,
             allowNull: true,
         },
+        Auditor: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
     },
     {
         sequelize,

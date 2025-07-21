@@ -20,6 +20,7 @@ routerLineaContada.post("/lineacontada", async (req, res) => {
         NombreLinea: req.body.description,
         isCounted: req.body.isCounted,
         CreatedAt: req.body.date,
+        Auditor: req.body.auditor,
     })
     res.status(201).json({
         ok: true,

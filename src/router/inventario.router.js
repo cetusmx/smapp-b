@@ -1,3 +1,4 @@
+/* Inventarios Cíclicos */
 const routerInventario = require("express").Router()
 
 const Inventarios = require("../model/inventario.model.js")
@@ -16,6 +17,20 @@ routerInventario.get("/inventario/:linea", async (req, res) => {
     const lineas = await Inventarios.findOne({
         where: {
             linea: linea
+        }
+    })
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: lineas,
+    })
+})
+
+routerInventario.get("/inventario/:auditor", async (req, res) => {
+    const Auditor = req.params.auditor
+    const lineas = await Inventarios.findOne({
+        where: {
+            Auditor: Auditor,
         }
     })
     res.status(200).json({
