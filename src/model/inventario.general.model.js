@@ -39,6 +39,10 @@ InventarioGeneral.init(
             type: DataTypes.DATE,
             allowNull: true,
         },
+        isCounted: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true,
+        },
     },
     {
         sequelize,

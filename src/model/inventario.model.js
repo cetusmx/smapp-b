@@ -63,6 +63,10 @@ Inventario.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        isCounted: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true,
+        },
     },
     {
         sequelize,

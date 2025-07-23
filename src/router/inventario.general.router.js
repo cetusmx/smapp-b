@@ -22,7 +22,7 @@ routerInventarioGeneral.post("/inventariogeneral", async (req, res) => {
         Lineas: req.body.Lineas,
         Auditor: req.body.Auditor,
         Fecha: req.body.Fecha,
-        /* CreatedAt: req.body.date, */
+        isCounted: false,
     })
     res.status(201).json({
         ok: true,
