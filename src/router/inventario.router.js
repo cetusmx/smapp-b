@@ -41,7 +41,7 @@ routerInventario.get("/inventario/:auditor", async (req, res) => {
 })
 
 routerInventario.post("/inventario", async (req, res) => {
-    //console.log(req.body)
+    console.log(req.body)
     await Inventarios.sync();
     const createInventarios = await Inventarios.bulkCreate(req.body)
     res.status(200).json({
