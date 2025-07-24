@@ -11,19 +11,40 @@ routerProductoContado.get("/productoscontados", async (req, res) => {
     })
 })
 
-routerProductoContado.get("/productoscontados/:linea", async (req, res) => {
-    const linea = req.params.linea
-    const productos = await ProductosContados.findAll({
-        where: {
-            linea: linea
+routerProductoContado.get("/productoscontados/:linea/:inventarioID/:auditor", async (req, res) => {
+    const { linea, inventarioID, auditor } = req.params; // Desestructuramos para obtener todos los parámetros
+    
+    try {
+        const productos = await ProductosContados.findAll({
+            where: {
+                Linea: linea,
+                InventarioID: inventarioID, // Añadimos el nuevo parámetro
+                Auditor: auditor           // Añadimos el nuevo parámetro
+            }
+        });
+
+        if (productos.length === 0) {
+            return res.status(404).json({
+                ok: false,
+                status: 404,
+                msg: "No se encontraron productos con los criterios especificados."
+            });
         }
-    })
-    res.status(200).json({
-        ok: true,
-        status: 200,
-        body: productos,
-    })
-})
+
+        res.status(200).json({
+            ok: true,
+            status: 200,
+            body: productos,
+        });
+    } catch (error) {
+        console.error("Error al buscar productos:", error);
+        res.status(500).json({
+            ok: false,
+            status: 500,
+            msg: "Ocurrió un error al procesar tu solicitud."
+        });
+    }
+});
 /**** ejemplo
  * routerInventario.get("/inventario/:linea", async (req, res) => {
     const linea = req.params.linea
