@@ -66,14 +66,14 @@ routerProductoContado.post("/productocontado", async (req, res) => {
     console.log(req.body)
     await ProductosContados.sync();
     const createProductoContado = await ProductosContados.create({
-        InventarioID: req.body.inventID,
-        Linea: req.body.lineId,
-        Clave: req.body.clave,
-        Descripcion: req.body.description,
-        Existencia: req.body.quantity,
-        Observaciones: req.body.note,
-        Unidad: req.body.unit,
-        Auditor: req.body.auditor,
+        InventarioID: req.body.InventarioID,
+        Linea: req.body.Linea,
+        Clave: req.body.Clave,
+        Descripcion: req.body.Descripcion,
+        Existencia: req.body.Existencia,
+        Observaciones: req.body.Observaciones,
+        Unidad: req.body.Unidad,
+        Auditor: req.body.Auditor,
         /* CreatedAt: req.body.date, */
     })
     res.status(201).json({
