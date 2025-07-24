@@ -13,7 +13,7 @@ routerProductoContado.get("/productoscontados", async (req, res) => {
 
 routerProductoContado.get("/productoscontados/:linea/:inventarioID/:auditor", async (req, res) => {
     const { linea, inventarioID, auditor } = req.params; // Desestructuramos para obtener todos los parámetros
-    
+    console.log(linea,"-",inventarioID,"-",auditor)
     try {
         const productos = await ProductosContados.findAll({
             where: {
@@ -36,6 +36,7 @@ routerProductoContado.get("/productoscontados/:linea/:inventarioID/:auditor", as
             status: 200,
             body: productos,
         });
+        console.log("Productos dentro endpoint ", productos);
     } catch (error) {
         console.error("Error al buscar productos:", error);
         res.status(500).json({

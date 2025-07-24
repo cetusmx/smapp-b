@@ -12,7 +12,7 @@ routerLineaContada.get("/lineacontada", async (req, res) => {
 })
 
 routerLineaContada.post("/lineacontada", async (req, res) => {
-    console.log(req.body)
+    //console.log(req.body)
     await LineasContadas.sync();
     const createProduct = await LineasContadas.create({
         InventarioID: req.body.inventID,
