@@ -11,6 +11,35 @@ routerProductoContado.get("/productoscontados", async (req, res) => {
     })
 })
 
+routerProductoContado.get("/productoscontados/:linea", async (req, res) => {
+    const linea = req.params.linea
+    const productos = await ProductosContados.findAll({
+        where: {
+            linea: linea
+        }
+    })
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: productos,
+    })
+})
+/**** ejemplo
+ * routerInventario.get("/inventario/:linea", async (req, res) => {
+    const linea = req.params.linea
+    const lineas = await Inventarios.findOne({
+        where: {
+            linea: linea
+        }
+    })
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: lineas,
+    })
+})
+ * 
+ */
 
 routerProductoContado.post("/productocontado", async (req, res) => {
     console.log(req.body)
