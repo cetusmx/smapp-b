@@ -15,12 +15,11 @@ routerLineaAjustada.post("/lineaajustada", async (req, res) => {
     console.log(req.body)
     await LineasAjustadas.sync();
     const createLinAjustada = await LineasAjustadas.create({
-        InventarioID: req.body.inventID,
-        Linea: req.body.lineId,
-        NombreLinea: req.body.description,
+        InventarioID: req.body.InventarioID,
+        Linea: req.body.Linea,
+        NombreLinea: req.body.NombreLinea,
         isAdjusted: req.body.isAdjusted,
-        CreatedAt: req.body.date,
-        Auditor: req.body.auditor,
+        Auditor: req.body.Auditor,
     })
     res.status(201).json({
         ok: true,
