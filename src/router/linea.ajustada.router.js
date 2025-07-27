@@ -12,7 +12,7 @@ routerLineaAjustada.get("/lineaajustada", async (req, res) => {
 })
 
 routerLineaAjustada.post("/lineaajustada", async (req, res) => {
-    //console.log(req.body)
+    console.log(req.body)
     await LineasAjustadas.sync();
     const createLinAjustada = await LineasAjustadas.create({
         InventarioID: req.body.inventID,
