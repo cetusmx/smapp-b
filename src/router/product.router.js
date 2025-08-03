@@ -47,12 +47,12 @@ router.post("/products", async (req, res) => {
 router.put("/products/:clave", async (req, res) => {
     const clave = req.params.clave
     const updateProduct = await Products.update({
-        clave: req.body.clave,
+        /* clave: req.body.clave,
         sucursal: req.body.sucursal,
         rfc: req.body.rfc,
         factura: req.body.factura,
         claveProveedor: req.body.claveProveedor,
-        fecha: req.body.fecha,
+        fecha: req.body.fecha, */
         estatus: req.body.estatus,
     },
         {
