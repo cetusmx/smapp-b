@@ -44,7 +44,25 @@ router.post("/products", async (req, res) => {
     })
 })
 
-router.put("/products/:clave", async (req, res) => {
+/* router.put("/products/:clave", async (req, res) => {
+    const clave = decodeURIComponent(req.params.clave);
+    console.log("Clave decodificada ",clave);
+    const updateProduct = await Products.update({
+        estatus: req.body.estatus,
+    },
+        {
+            where: {
+                clave: clave
+            }
+        })
+        res.status(200).json({
+            ok: true,
+            status: 200,
+            body: updateProduct,
+        })
+}) */
+
+router.put("/products", async (req, res) => {
     const clave = decodeURIComponent(req.params.clave);
     console.log("Clave decodificada ",clave);
     const updateProduct = await Products.update({
@@ -67,6 +85,7 @@ router.put("/products/:clave", async (req, res) => {
             body: updateProduct,
         })
 })
+
 router.delete("/products/:clave", async (req, res) => {
     const clave = req.params.clave
     const deleteProduct = await Products.destroy({
