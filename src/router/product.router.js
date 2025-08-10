@@ -46,7 +46,7 @@ router.post("/products", async (req, res) => {
 
 router.put("/products/:clave", async (req, res) => {
     const clave = decodeURIComponent(req.params.clave);
-    console.log(clave);
+    console.log("Clave decodificada ",clave);
     const updateProduct = await Products.update({
         /* clave: req.body.clave,
         sucursal: req.body.sucursal,
