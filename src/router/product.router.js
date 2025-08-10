@@ -76,7 +76,7 @@ router.put("/products", async (req, res) => {
     },
         {
             where: {
-                clave: clave
+                clave: req.body.clave
             }
         })
         res.status(200).json({
