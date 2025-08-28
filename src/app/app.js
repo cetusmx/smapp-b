@@ -1,6 +1,6 @@
 const express = require("express")
 const morgan = require("morgan")
-const cors = require("cors");
+//const cors = require("cors");
 
 const router = require("../router/product.router")
 const routerLista = require("../router/lista.router")
@@ -21,7 +21,7 @@ app.use(express.json({
 
 app.use(express.urlencoded({ limit: '50mb', extended: true }))
 
-app.use(cors());
+//app.use(cors());
 app.use(morgan("dev"))
 
 app.get('/', (req, res) => {
