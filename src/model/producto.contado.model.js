@@ -1,11 +1,12 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
+const sequelize = require('../config/db');
 
 // Option 3: Passing parameters separately (other dialects)
-const sequelize = new Sequelize('sealmark_cotizador', 'sealmark_cotizauser', 'Trof#4102', {
+/* const sequelize = new Sequelize('sealmark_cotizador', 'sealmark_cotizauser', 'Trof#4102', {
     host: 'sealmarket.mx',
     dialect: 'mysql',
     port: 3306
-});
+}); */
 
 class ProductoContado extends Model { }
 
@@ -24,6 +25,10 @@ ProductoContado.init(
             allowNull: true,
         },
         Unidad: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        Caja: {
             type: DataTypes.STRING,
             allowNull: true,
         },

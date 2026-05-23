@@ -1,6 +1,6 @@
 const express = require("express")
 const morgan = require("morgan")
-//const cors = require("cors");
+const cors = require("cors");   //COMENTAR EN PRODUCCION
 
 const router = require("../router/product.router")
 const routerLista = require("../router/lista.router")
@@ -13,6 +13,15 @@ const routerInventarioGeneral = require("../router/inventario.general.router")
 const routerLineasAjustadas = require("../router/linea.ajustada.router")
 
 const app = express()
+// CONFIGURACIÓN DE CORS --- COMENTAR EN PRODUCCION
+app.use(cors({
+    origin: "http://localhost:3000", // Permite solo a tu frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
+// FIN DE COMENTAR EN PRODUCCION
+
+
 app.use(express.json({
   type: ['application/json', 'text/plain'],
   limit: '50mb',
