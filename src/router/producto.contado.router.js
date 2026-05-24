@@ -73,6 +73,7 @@ routerProductoContado.post("/productocontado", async (req, res) => {
         Descripcion: req.body.Descripcion,
         Existencia: req.body.Existencia,
         Observaciones: req.body.Observaciones,
+        Caja: req.body.Caja,
         Unidad: req.body.Unidad,
         Auditor: req.body.Auditor,
         /* CreatedAt: req.body.date, */
