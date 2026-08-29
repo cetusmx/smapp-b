@@ -11,6 +11,7 @@ const routerProductosContados = require("../router/producto.contado.router")
 const routerProductosRecepcionados = require("../router/producto.recepcionado.router")
 const routerInventarioGeneral = require("../router/inventario.general.router")
 const routerLineasAjustadas = require("../router/linea.ajustada.router")
+const routerStockAlmacen = require("../router/stock.almacen.router")
 
 const app = express()
 // CONFIGURACIÓN DE CORS --- COMENTAR EN PRODUCCION
@@ -54,5 +55,7 @@ app.use("/api/v1", routerProductosRecepcionados)
 app.use("/api/v1", routerInventarioGeneral)
 
 app.use("/api/v1", routerLineasAjustadas)
+
+app.use("/api/v1", routerStockAlmacen)
 
 module.exports = app;
