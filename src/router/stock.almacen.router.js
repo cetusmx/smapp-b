@@ -25,6 +25,21 @@ function sanearyValidar(registros) {
     })
 }
 
+routerStockAlmacen.get("/stocks-almacenes", async (req, res) => {
+    const { almacen, clave, rotacion } = req.query
+    const where = {}
+    if (almacen !== undefined && almacen !== "") where.almacen = almacen
+    if (clave !== undefined && clave !== "") where.clave = clave
+    if (rotacion !== undefined && rotacion !== "") where.rotacion = rotacion
+
+    const registros = await StockAlmacen.findAll({ where })
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: registros,
+    })
+})
+
 routerStockAlmacen.post("/stocks-almacenes", async (req, res) => {
     const registros = req.body && req.body.registros
     const reemplazar = req.body && req.body.reemplazar === true
