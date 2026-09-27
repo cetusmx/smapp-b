@@ -31,8 +31,13 @@ app.use(express.json({
 
 app.use(express.urlencoded({ limit: '50mb', extended: true }))
 
-//app.use(cors());
-app.use(morgan("dev"))
+// Configuración de Morgan con fecha y hora exacta
+morgan.token('fecha', () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+});
+
+app.use(morgan('[:fecha] :method :url :status :response-time ms - :res[content-length]'));
 
 app.get('/', (req, res) => {
   res.send('This is Express')

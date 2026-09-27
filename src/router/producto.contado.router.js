@@ -131,6 +131,35 @@ routerProductoContado.post("/productocontado", async (req, res) => {
             });
         }
 
+        const mergeText = (oldT, newT) => {
+            if (!newT) return oldT || "";
+            if (!oldT) return newT;
+            if (oldT.includes(newT)) return oldT;
+            return oldT + ", " + newT;
+        };
+
+        const existing = await ProductosContados.findOne({
+            where: { InventarioID: req.body.InventarioID, Clave: req.body.Clave }
+        });
+
+        if (existing) {
+            const nuevaExistencia = (parseFloat(existing.Existencia || 0) + parseFloat(req.body.Existencia || 0)).toString();
+            
+            await existing.update({
+                Existencia: nuevaExistencia,
+                Ubicacion: mergeText(existing.Ubicacion, req.body.Ubicacion),
+                Observaciones: mergeText(existing.Observaciones, req.body.Observaciones),
+                Caja: mergeText(existing.Caja, req.body.Caja),
+                Auditor: req.body.Auditor
+            });
+
+            return res.status(200).json({
+                ok: true,
+                status: 200,
+                message: "Producto actualizado (existencias sumadas)",
+            });
+        }
+
         let descripcion = req.body.Descripcion || "";
         let linea = req.body.Linea || "";
         let unidad = req.body.Unidad || "";
@@ -191,30 +220,99 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
             });
         }
 
+        const mergeText = (oldT, newT) => {
+            if (!newT) return oldT || "";
+            if (!oldT) return newT;
+            if (oldT.includes(newT)) return oldT;
+            return oldT + ", " + newT;
+        };
+
+        // 1. Consolidate incoming items first (in case payload has duplicates)
+        const consolidatedItems = {};
+        for (const item of items) {
+            const key = item.InventarioID + "_" + item.Clave;
+            if (consolidatedItems[key]) {
+                const existing = consolidatedItems[key];
+                existing.Existencia = (parseFloat(existing.Existencia || 0) + parseFloat(item.Existencia || 0)).toString();
+                existing.Ubicacion = mergeText(existing.Ubicacion, item.Ubicacion);
+                existing.Observaciones = mergeText(existing.Observaciones, item.Observaciones);
+                existing.Caja = mergeText(existing.Caja, item.Caja);
+                existing.Auditor = item.Auditor;
+            } else {
+                consolidatedItems[key] = { ...item };
+            }
+        }
+        const finalItems = Object.values(consolidatedItems);
+
         // Map products for fast lookup
         const infoMap = {};
         productosInfo.forEach(p => {
             infoMap[p.clave] = p;
         });
 
-        // Mix frontend data with DB data
-        const itemsToCreate = items.map(item => {
-            const pInfo = infoMap[item.Clave];
-            return {
-                ...item,
-                Descripcion: pInfo && pInfo.descripcion ? pInfo.descripcion : (item.Descripcion || ""),
-                Linea: pInfo && pInfo.linea ? pInfo.linea : (item.Linea || ""),
-                Unidad: pInfo && pInfo.unidad ? pInfo.unidad : (item.Unidad || ""),
-            };
+        // 2. Check existing records in DB
+        const inventarioIDs = [...new Set(finalItems.map(i => i.InventarioID))];
+        const dbRecords = await ProductosContados.findAll({
+            where: {
+                InventarioID: inventarioIDs,
+                Clave: clavesUnicas
+            }
+        });
+
+        const dbRecordsMap = {};
+        dbRecords.forEach(r => {
+            dbRecordsMap[r.InventarioID + "_" + r.Clave] = r;
         });
 
         await ProductosContados.sync();
-        const createProductosContados = await ProductosContados.bulkCreate(itemsToCreate);
+
+        const itemsToCreate = [];
+        const updatesPromises = [];
+
+        // Mix frontend data with DB data & perform Upsert
+        for (const item of finalItems) {
+            const key = item.InventarioID + "_" + item.Clave;
+            const pInfo = infoMap[item.Clave];
+            const dbRecord = dbRecordsMap[key];
+
+            const itemDescripcion = pInfo && pInfo.descripcion ? pInfo.descripcion : (item.Descripcion || "");
+            const itemLinea = pInfo && pInfo.linea ? pInfo.linea : (item.Linea || "");
+            const itemUnidad = pInfo && pInfo.unidad ? pInfo.unidad : (item.Unidad || "");
+
+            if (dbRecord) {
+                // Update
+                const nuevaExistencia = (parseFloat(dbRecord.Existencia || 0) + parseFloat(item.Existencia || 0)).toString();
+                updatesPromises.push(
+                    dbRecord.update({
+                        Existencia: nuevaExistencia,
+                        Ubicacion: mergeText(dbRecord.Ubicacion, item.Ubicacion),
+                        Observaciones: mergeText(dbRecord.Observaciones, item.Observaciones),
+                        Caja: mergeText(dbRecord.Caja, item.Caja),
+                        Auditor: item.Auditor
+                    })
+                );
+            } else {
+                // Create
+                itemsToCreate.push({
+                    ...item,
+                    Descripcion: itemDescripcion,
+                    Linea: itemLinea,
+                    Unidad: itemUnidad,
+                });
+            }
+        }
+
+        if (itemsToCreate.length > 0) {
+            await ProductosContados.bulkCreate(itemsToCreate);
+        }
+        if (updatesPromises.length > 0) {
+            await Promise.all(updatesPromises);
+        }
         
         res.status(200).json({
             ok: true,
             status: 200,
-            message: "Productos contados y guardados",
+            message: "Productos contados guardados/actualizados",
         })
     } catch (error) {
         console.error("Error guardando productos contados:", error);
