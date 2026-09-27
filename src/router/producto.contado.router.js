@@ -83,6 +83,40 @@ routerProductoContado.get("/productoscontados/ubicacion/:ubicacion/:inventarioID
     }
 });
 
+routerProductoContado.get("/productoscontados/inventario/:inventarioID/auditor/:auditor", async (req, res) => {
+    const { inventarioID, auditor } = req.params;
+    console.log("Consulta por Inventario y Auditor:", inventarioID, "-", auditor);
+    try {
+        const productos = await ProductosContados.findAll({
+            where: {
+                InventarioID: inventarioID,
+                Auditor: auditor
+            }
+        });
+
+        if (productos.length === 0) {
+            return res.status(404).json({
+                ok: false,
+                status: 404,
+                msg: "No se encontraron productos con los criterios especificados."
+            });
+        }
+
+        res.status(200).json({
+            ok: true,
+            status: 200,
+            body: productos,
+        });
+    } catch (error) {
+        console.error("Error al buscar productos:", error);
+        res.status(500).json({
+            ok: false,
+            status: 500,
+            msg: "Ocurrió un error al procesar tu solicitud."
+        });
+    }
+});
+
 routerProductoContado.post("/productocontado", async (req, res) => {
     console.log(req.body)
     try {
