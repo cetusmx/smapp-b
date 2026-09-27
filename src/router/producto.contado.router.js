@@ -122,15 +122,22 @@ routerProductoContado.post("/productocontado", async (req, res) => {
     try {
         const productoInfo = await Producto.findOne({ where: { clave: req.body.Clave } });
 
+        if (!productoInfo) {
+            return res.status(404).json({
+                ok: false,
+                status: 404,
+                message: "La clave del producto no existe en el catálogo",
+                clave: req.body.Clave
+            });
+        }
+
         let descripcion = req.body.Descripcion || "";
         let linea = req.body.Linea || "";
         let unidad = req.body.Unidad || "";
 
-        if (productoInfo) {
-            descripcion = productoInfo.descripcion || descripcion;
-            linea = productoInfo.linea || linea;
-            unidad = productoInfo.unidad || unidad;
-        }
+        descripcion = productoInfo.descripcion || descripcion;
+        linea = productoInfo.linea || linea;
+        unidad = productoInfo.unidad || unidad;
 
         await ProductosContados.sync();
         const createProductoContado = await ProductosContados.create({
@@ -170,6 +177,20 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
         // Fetch missing info for all claves in bulk
         const productosInfo = await Producto.findAll({ where: { clave: claves } });
         
+        // Find missing claves
+        const clavesUnicas = [...new Set(claves)];
+        const clavesEncontradas = productosInfo.map(p => p.clave);
+        const clavesFaltantes = clavesUnicas.filter(c => !clavesEncontradas.includes(c));
+
+        if (clavesFaltantes.length > 0) {
+            return res.status(404).json({
+                ok: false,
+                status: 404,
+                message: "Algunos productos no existen en el catálogo",
+                clavesNoEncontradas: clavesFaltantes
+            });
+        }
+
         // Map products for fast lookup
         const infoMap = {};
         productosInfo.forEach(p => {
