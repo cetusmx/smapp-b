@@ -41,5 +41,34 @@ routerInventarioGeneral.post("/inventariosgenerales", async (req, res) => {
         message: "Inventarios generales guardados",
     })
 })
+routerInventarioGeneral.put("/inventariogeneral/cerrar/:inventarioID", async (req, res) => {
+    const { inventarioID } = req.params;
+    try {
+        const inventario = await InventarioGeneral.findOne({ where: { InventarioID: inventarioID } });
+        
+        if (!inventario) {
+            return res.status(404).json({
+                ok: false,
+                status: 404,
+                message: "Inventario no encontrado"
+            });
+        }
+
+        await inventario.update({ isCounted: true });
+
+        res.status(200).json({
+            ok: true,
+            status: 200,
+            message: "Inventario cerrado exitosamente"
+        });
+    } catch (error) {
+        console.error("Error al cerrar inventario:", error);
+        res.status(500).json({
+            ok: false,
+            status: 500,
+            message: "Ocurrió un error al procesar tu solicitud."
+        });
+    }
+});
 
 module.exports = routerInventarioGeneral

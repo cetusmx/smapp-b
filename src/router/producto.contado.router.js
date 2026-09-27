@@ -2,6 +2,7 @@ const routerProductoContado = require("express").Router()
 
 const ProductosContados = require("../model/producto.contado.model.js")
 const Producto = require("../model/producto.model.js")
+const InventarioGeneral = require("../model/inventario.general.model.js")
 
 routerProductoContado.get("/productoscontados", async (req, res) => {
     const productosContados = await ProductosContados.findAll()
@@ -120,6 +121,15 @@ routerProductoContado.get("/productoscontados/inventario/:inventarioID/auditor/:
 routerProductoContado.post("/productocontado", async (req, res) => {
     console.log(req.body)
     try {
+        const inventario = await InventarioGeneral.findOne({ where: { InventarioID: req.body.InventarioID } });
+        if (inventario && inventario.isCounted) {
+            return res.status(403).json({
+                ok: false,
+                status: 403,
+                message: "Este inventario ya fue cerrado. No se admiten más registros."
+            });
+        }
+
         const productoInfo = await Producto.findOne({ where: { clave: req.body.Clave } });
 
         if (!productoInfo) {
@@ -201,6 +211,24 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
     console.log("Producto contados: ", req.body)
     try {
         const items = req.body;
+        
+        const inventarioIDsReq = [...new Set(items.map(i => i.InventarioID))];
+        const inventariosCerrados = await InventarioGeneral.findAll({
+            where: {
+                InventarioID: inventarioIDsReq,
+                isCounted: true
+            }
+        });
+
+        if (inventariosCerrados.length > 0) {
+            return res.status(403).json({
+                ok: false,
+                status: 403,
+                message: "Uno o más inventarios ya fueron cerrados. No se admiten más registros.",
+                inventariosCerrados: inventariosCerrados.map(i => i.InventarioID)
+            });
+        }
+
         const claves = items.map(i => i.Clave);
         
         // Fetch missing info for all claves in bulk
