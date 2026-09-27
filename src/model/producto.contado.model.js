@@ -44,6 +44,10 @@ ProductoContado.init(
             type: DataTypes.STRING,
             allowNull: true,
         },
+        Ubicacion: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         Auditor: {
             type: DataTypes.STRING,
             allowNull: false,
