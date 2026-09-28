@@ -3,6 +3,7 @@ const routerProductoContado = require("express").Router()
 const ProductosContados = require("../model/producto.contado.model.js")
 const Producto = require("../model/producto.model.js")
 const InventarioGeneral = require("../model/inventario.general.model.js")
+const UbicacionEstado = require("../model/ubicacion.estado.model.js")
 
 async function fetchExternalCatalog(clavesArray) {
     try {
@@ -155,6 +156,15 @@ routerProductoContado.post("/productocontado", async (req, res) => {
             });
         }
 
+        const ubicacionEst = await UbicacionEstado.findOne({ where: { InventarioID: req.body.InventarioID, Ubicacion: req.body.Ubicacion } });
+        if (ubicacionEst && ubicacionEst.isAdjusted) {
+            return res.status(403).json({
+                ok: false,
+                status: 403,
+                message: "Esta ubicación ya fue procesada en el ERP. No se admiten más registros."
+            });
+        }
+
         const claveLimpia = String(req.body.Clave).trim();
         const productosExternal = await fetchExternalCatalog([claveLimpia]);
         const productoInfo = productosExternal.find(p => String(p.clave).trim() === claveLimpia);
@@ -176,7 +186,7 @@ routerProductoContado.post("/productocontado", async (req, res) => {
         };
 
         const existing = await ProductosContados.findOne({
-            where: { InventarioID: req.body.InventarioID, Clave: req.body.Clave }
+            where: { InventarioID: req.body.InventarioID, Clave: req.body.Clave, Ubicacion: req.body.Ubicacion }
         });
 
         if (existing) {
@@ -184,7 +194,6 @@ routerProductoContado.post("/productocontado", async (req, res) => {
             
             await existing.update({
                 Existencia: nuevaExistencia,
-                Ubicacion: mergeText(existing.Ubicacion, req.body.Ubicacion),
                 Observaciones: mergeText(existing.Observaciones, req.body.Observaciones),
                 Caja: mergeText(existing.Caja, req.body.Caja),
                 Auditor: req.body.Auditor
@@ -256,6 +265,23 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
             });
         }
 
+        const ubicacionesProcesadas = await UbicacionEstado.findAll({
+            where: { InventarioID: inventarioIDsReq, isAdjusted: true }
+        });
+        
+        if (ubicacionesProcesadas.length > 0) {
+            const procesadasSet = new Set(ubicacionesProcesadas.map(u => u.InventarioID + "_" + u.Ubicacion));
+            const itemBloqueado = items.find(i => procesadasSet.has(i.InventarioID + "_" + i.Ubicacion));
+            
+            if (itemBloqueado) {
+                return res.status(403).json({
+                    ok: false,
+                    status: 403,
+                    message: "Una o más ubicaciones de este lote ya fueron procesadas en el ERP. No se admiten más registros."
+                });
+            }
+        }
+
         const claves = items.map(i => String(i.Clave).trim());
         
         // Fetch missing info for all claves in bulk from external API
@@ -285,11 +311,10 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
         // 1. Consolidate incoming items first (in case payload has duplicates)
         const consolidatedItems = {};
         for (const item of items) {
-            const key = item.InventarioID + "_" + item.Clave;
+            const key = item.InventarioID + "_" + item.Clave + "_" + (item.Ubicacion || "");
             if (consolidatedItems[key]) {
                 const existing = consolidatedItems[key];
                 existing.Existencia = (parseFloat(existing.Existencia || 0) + parseFloat(item.Existencia || 0)).toString();
-                existing.Ubicacion = mergeText(existing.Ubicacion, item.Ubicacion);
                 existing.Observaciones = mergeText(existing.Observaciones, item.Observaciones);
                 existing.Caja = mergeText(existing.Caja, item.Caja);
                 existing.Auditor = item.Auditor;
@@ -316,7 +341,7 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
 
         const dbRecordsMap = {};
         dbRecords.forEach(r => {
-            dbRecordsMap[r.InventarioID + "_" + r.Clave] = r;
+            dbRecordsMap[r.InventarioID + "_" + r.Clave + "_" + (r.Ubicacion || "")] = r;
         });
 
         await ProductosContados.sync();
@@ -326,7 +351,7 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
 
         // Mix frontend data with DB data & perform Upsert
         for (const item of finalItems) {
-            const key = item.InventarioID + "_" + item.Clave;
+            const key = item.InventarioID + "_" + item.Clave + "_" + (item.Ubicacion || "");
             const pInfo = infoMap[String(item.Clave).trim()];
             const dbRecord = dbRecordsMap[key];
 
@@ -340,7 +365,6 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
                 updatesPromises.push(
                     dbRecord.update({
                         Existencia: nuevaExistencia,
-                        Ubicacion: mergeText(dbRecord.Ubicacion, item.Ubicacion),
                         Observaciones: mergeText(dbRecord.Observaciones, item.Observaciones),
                         Caja: mergeText(dbRecord.Caja, item.Caja),
                         Auditor: item.Auditor
