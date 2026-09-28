@@ -4,6 +4,31 @@ const ProductosContados = require("../model/producto.contado.model.js")
 const Producto = require("../model/producto.model.js")
 const InventarioGeneral = require("../model/inventario.general.model.js")
 
+async function fetchExternalCatalog(clavesArray) {
+    try {
+        const apiUrl = process.env.FIREBIRD_API_URL;
+        const apiKey = process.env.FIREBIRD_API_KEY;
+
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": apiKey
+            },
+            body: JSON.stringify({ claves: clavesArray })
+        });
+        if (!response.ok) {
+            console.error("Error from external API:", response.statusText);
+            return [];
+        }
+        const data = await response.json();
+        return data.productos || [];
+    } catch (error) {
+        console.error("External API request failed:", error);
+        return [];
+    }
+}
+
 routerProductoContado.get("/productoscontados", async (req, res) => {
     const productosContados = await ProductosContados.findAll()
     res.status(200).json({
@@ -130,7 +155,9 @@ routerProductoContado.post("/productocontado", async (req, res) => {
             });
         }
 
-        const productoInfo = await Producto.findOne({ where: { clave: req.body.Clave } });
+        const claveLimpia = String(req.body.Clave).trim();
+        const productosExternal = await fetchExternalCatalog([claveLimpia]);
+        const productoInfo = productosExternal.find(p => String(p.clave).trim() === claveLimpia);
 
         if (!productoInfo) {
             return res.status(404).json({
@@ -229,14 +256,14 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
             });
         }
 
-        const claves = items.map(i => i.Clave);
+        const claves = items.map(i => String(i.Clave).trim());
         
-        // Fetch missing info for all claves in bulk
-        const productosInfo = await Producto.findAll({ where: { clave: claves } });
+        // Fetch missing info for all claves in bulk from external API
+        const productosInfo = await fetchExternalCatalog(claves);
         
         // Find missing claves
         const clavesUnicas = [...new Set(claves)];
-        const clavesEncontradas = productosInfo.map(p => p.clave);
+        const clavesEncontradas = productosInfo.map(p => String(p.clave).trim());
         const clavesFaltantes = clavesUnicas.filter(c => !clavesEncontradas.includes(c));
 
         if (clavesFaltantes.length > 0) {
@@ -275,7 +302,7 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
         // Map products for fast lookup
         const infoMap = {};
         productosInfo.forEach(p => {
-            infoMap[p.clave] = p;
+            infoMap[String(p.clave).trim()] = p;
         });
 
         // 2. Check existing records in DB
@@ -300,7 +327,7 @@ routerProductoContado.post("/productoscontados", async (req, res) => {
         // Mix frontend data with DB data & perform Upsert
         for (const item of finalItems) {
             const key = item.InventarioID + "_" + item.Clave;
-            const pInfo = infoMap[item.Clave];
+            const pInfo = infoMap[String(item.Clave).trim()];
             const dbRecord = dbRecordsMap[key];
 
             const itemDescripcion = pInfo && pInfo.descripcion ? pInfo.descripcion : (item.Descripcion || "");
