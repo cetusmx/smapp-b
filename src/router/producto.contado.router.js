@@ -26,6 +26,8 @@ async function fetchExternalCatalog(clavesArray) {
         });
         
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`[ERROR ERP] Status: ${response.status} | Detalle del ERP:`, errorText);
             // Throw explicitly so the router catches it and returns 500 instead of a fake 404
             throw new Error(`External API responded with status: ${response.status}`);
         }
