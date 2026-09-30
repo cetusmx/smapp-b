@@ -10,23 +10,31 @@ async function fetchExternalCatalog(clavesArray) {
         const apiUrl = process.env.FIREBIRD_API_URL;
         const apiKey = process.env.FIREBIRD_API_KEY;
 
+        // Firebird crashes with 500 error if we send strings > 16 chars for CVE_ART
+        // We filter them out here. They will naturally be marked as missing (404) later.
+        const clavesValidas = clavesArray.filter(c => c && c.length <= 16);
+        
+        if (clavesValidas.length === 0) return [];
+
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "x-api-key": apiKey
             },
-            body: JSON.stringify({ claves: clavesArray })
+            body: JSON.stringify({ claves: clavesValidas })
         });
+        
         if (!response.ok) {
-            console.error("Error from external API:", response.statusText);
-            return [];
+            // Throw explicitly so the router catches it and returns 500 instead of a fake 404
+            throw new Error(`External API responded with status: ${response.status}`);
         }
+        
         const data = await response.json();
         return data.productos || [];
     } catch (error) {
         console.error("External API request failed:", error);
-        return [];
+        throw error; // Let the router catch it and return a 500 status to the frontend
     }
 }
 
